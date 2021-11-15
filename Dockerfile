@@ -1,6 +1,6 @@
-FROM alpine:3.13.5
+FROM debian:10
 
-RUN apk add --no-cache curl jq
+RUN apt-get update && apt-get -y install curl jq
 
 COPY docker-entrypoint /
 ENTRYPOINT ["/docker-entrypoint"]
@@ -13,6 +13,6 @@ ENV AUTOHEAL_CONTAINER_LABEL=autoheal \
     CURL_TIMEOUT=30 \
     WEBHOOK_URL=""
 
-HEALTHCHECK --interval=5s CMD pgrep -f autoheal || exit 1
+#HEALTHCHECK --interval=5s CMD pgrep -f autoheal || exit 1
 
 CMD ["autoheal"]

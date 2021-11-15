@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 set -e
 # shellcheck disable=2039
@@ -100,6 +100,7 @@ if [ "$1" = "autoheal" ] && [ -e "$DOCKER_SOCK" ];then
       jq -r "foreach .[] as \$CONTAINER([];[]; \$CONTAINER | .Id, .Names[0], .State, ${STOP_TIMEOUT})" | \
       while read -r CONTAINER_ID && read -r CONTAINER_NAME && read -r CONTAINER_STATE && read -r TIMEOUT
     do
+  echo "$DATE LOOP"
       # shellcheck disable=2039
       CONTAINER_SHORT_ID=${CONTAINER_ID:0:12}
       DATE=$(date +%d-%m-%Y" "%H:%M:%S)
@@ -117,6 +118,7 @@ if [ "$1" = "autoheal" ] && [ -e "$DOCKER_SOCK" ];then
           echo "$DATE Restarting container $CONTAINER_SHORT_ID failed" >&2
           notify_webhook "Container ${CONTAINER_NAME:1} (${CONTAINER_SHORT_ID}) found to be unhealthy. Failed to restart the container!" &
         else 
+          echo "$DATE Restarting container $CONTAINER_SHORT_ID success"
           notify_webhook "Container ${CONTAINER_NAME:1} (${CONTAINER_SHORT_ID}) found to be unhealthy. Successfully restarted the container!" &
         fi
       fi
